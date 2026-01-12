@@ -26,6 +26,7 @@ This system provides an intelligent matching platform that automates the recruit
 
 - **Backend:**
   - Node.js & Express.js - Server framework
+  - MySQL - SQL database for Relational data storage 
   - MongoDB - NoSQL database for flexibility and scalability
   - Mongoose - ODM for MongoDB
   - Google Gemini API - Advanced NLP for AI analysis
