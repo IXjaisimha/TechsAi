@@ -55,7 +55,7 @@ A complete Node.js authentication backend with user registration and login funct
      ```
      DB_HOST=localhost
      DB_PORT=3306
-     DB_NAME=auth_db
+     DB_NAME=TechsAI
      DB_USER=root
      DB_PASSWORD=your_password
      JWT_SECRET=your_secret_key_here
@@ -64,10 +64,9 @@ A complete Node.js authentication backend with user registration and login funct
 
 3. **Set up MySQL database:**
    - Install MySQL locally or use a cloud MySQL service
-   - Create a database named `auth_db` (or your preferred name)
+   - Create a database named `TechsAI`
+   - Run the SQL commands to create the tables (see Database Schema section)
    - Update `.env` with your MySQL credentials
-   - The tables will be created automatically when you start the server
-   - Update `MONGODB_URI` in `.env` with your connection string
 
 ## Running the Application
 
@@ -83,6 +82,33 @@ npm start
 
 The server will start on `http://localhost:5000`
 
+## Database Schema
+
+### Users Table
+```sql
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role ENUM('ADMIN','USER') NOT NULL DEFAULT 'USER',
+    status ENUM('ACTIVE','INACTIVE') DEFAULT 'ACTIVE',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+
+### Additional Tables
+The database includes these additional tables for extended functionality:
+- `user_profiles` - User profile information (qualifications, experience, skills)
+- `resumes` - Resume file storage and management
+- `resume_skills` - Skills extracted from resumes
+- `jobs` - Job postings created by admins
+- `job_normal_skills` - Required skills for jobs
+- `job_hidden_skills` - Hidden skills evaluated by AI
+- `applications` - User job applications
+- `ai_match_results` - AI-based job matching scores
+
 ## API Endpoints
 
 ### 1. Register User
@@ -92,7 +118,8 @@ The server will start on `http://localhost:5000`
   {
     "name": "John Doe",
     "email": "john@example.com",
-    "password": "password123"
+    "password": "password123",
+    "role": "USER"
   }
   ```
 - **Response:**
@@ -102,9 +129,11 @@ The server will start on `http://localhost:5000`
     "message": "User registered successfully",
     "token": "jwt_token_here",
     "user": {
-      "id": "user_id",
+      "id": 1,
       "name": "John Doe",
-      "email": "john@example.com"
+      "email": "john@example.com",
+      "role": "USER",
+      "status": "ACTIVE"
     }
   }
   ```
@@ -125,9 +154,11 @@ The server will start on `http://localhost:5000`
     "message": "Login successful",
     "token": "jwt_token_here",
     "user": {
-      "id": "user_id",
+      "id": 1,
       "name": "John Doe",
-      "email": "john@example.com"
+      "email": "john@example.com",
+      "role": "USER",
+      "status": "ACTIVE"
     }
   }
   ```
@@ -143,9 +174,11 @@ The server will start on `http://localhost:5000`
   {
     "success": true,
     "user": {
-      "id": "user_id",
+      "id": 1,
       "name": "John Doe",
       "email": "john@example.com",
+      "role": "USER",
+      "status": "ACTIVE",
       "createdAt": "2026-01-06T..."
     }
   }
@@ -164,7 +197,7 @@ You can test the API using:
 ```bash
 curl -X POST http://localhost:5000/api/auth/register \
   -H "Content-Type: application/json" \
-  -d "{\"name\":\"John Doe\",\"email\":\"john@example.com\",\"password\":\"password123\"}"
+  -d "{\"name\":\"John Doe\",\"email\":\"john@example.com\",\"password\":\"password123\",\"role\":\"USER\"}"
 ```
 
 **Login:**

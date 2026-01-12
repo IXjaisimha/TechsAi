@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Resume Matcher</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="min-h-screen bg-slate-950 text-slate-100">
+    <div class="min-h-screen flex flex-col">
+      <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500 text-white font-semibold shadow-lg shadow-indigo-500/30">AI</span>
+            <div>
+              <h1 class="text-lg font-semibold tracking-tight">AI Resume & JD Matcher</h1>
+              <p class="text-xs text-slate-400">Powered by Gemini + Polyglot Persistence</p>
+            </div>
+          </div>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+            Backend: Online
+          </span>
+        </div>
+      </header>
+
+      <main class="flex-1">
+        <div class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+          <!-- Hero -->
+          <div class="rounded-3xl border border-slate-800 bg-gradient-to-r from-slate-900/90 via-indigo-900/40 to-slate-900/80 shadow-2xl shadow-black/40 p-8">
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <p class="text-sm uppercase tracking-[0.2em] text-indigo-300/80 font-semibold">Role-based access</p>
+                <h2 class="text-3xl font-bold mt-2 mb-3 text-white">AI Resume & JD Matcher</h2>
+                <p class="text-slate-300 max-w-2xl">
+                  Log in as a candidate or admin. Candidates can upload resumes and view AI-extracted skills.
+                  Admins can review resumes, AI matches, and job insights.
+                </p>
+              </div>
+              <div class="flex flex-wrap gap-3 text-sm">
+                <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">Gemini AI ready</span>
+                <span class="px-3 py-1 rounded-full bg-sky-500/10 text-sky-200 border border-sky-500/30">MySQL + MongoDB</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid gap-8 lg:grid-cols-[minmax(0,3fr),minmax(0,2fr)]">
+            <!-- Left: Auth + dashboards -->
+            <section class="space-y-6">
+              <div class="bg-slate-900/80 border border-slate-800 rounded-2xl shadow-xl shadow-black/40 p-6">
+                <div class="flex items-center justify-between mb-3">
+                  <div>
+                    <h2 class="text-lg font-semibold">Authenticate</h2>
+                    <p class="text-sm text-slate-400">Get a JWT and role (USER or ADMIN).</p>
+                  </div>
+                  <button
+                    id="logout-btn"
+                    class="hidden text-xs px-3 py-1.5 rounded-md border border-slate-700 text-slate-200 hover:bg-slate-800"
+                    type="button"
+                  >
+                    Logout
+                  </button>
+                </div>
+                <div class="grid gap-4 md:grid-cols-2">
+                  <form id="login-form" class="space-y-3">
+                    <div class="flex items-center gap-2">
+                      <span class="inline-flex h-6 w-6 items-center justify-center rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs">Login</span>
+                      <p class="text-xs text-slate-400">Existing users</p>
+                    </div>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="email@example.com"
+                      required
+                      class="w-full rounded-lg border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                    <input
+                      type="password"
+                      name="password"
+                      placeholder="password"
+                      required
+                      class="w-full rounded-lg border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                    <button
+                      type="submit"
+                      class="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-500 px-3 py-2 text-sm font-semibold text-emerald-950 shadow-lg shadow-emerald-500/30 hover:bg-emerald-400"
+                    >
+                      Login
+                    </button>
+                  </form>
+
+                  <form id="register-form" class="space-y-3">
+                    <div class="flex items-center gap-2">
+                      <span class="inline-flex h-6 w-6 items-center justify-center rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 text-xs">Register</span>
+                      <p class="text-xs text-slate-400">Create new user</p>
+                    </div>
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Full name"
+                      required
+                      class="w-full rounded-lg border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="email@example.com"
+                      required
+                      class="w-full rounded-lg border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                    <input
+                      type="password"
+                      name="password"
+                      placeholder="password"
+                      required
+                      class="w-full rounded-lg border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                    <select
+                      name="role"
+                      class="w-full rounded-lg border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    >
+                      <option value="USER">Candidate (USER)</option>
+                      <option value="ADMIN">Admin</option>
+                    </select>
+                    <button
+                      type="submit"
+                      class="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 hover:bg-indigo-400"
+                    >
+                      Register
+                    </button>
+                  </form>
+                </div>
+                <p class="text-xs text-slate-500 mt-3">Current user: <span id="auth-status" class="text-slate-200">Not logged in</span></p>
+              </div>
+
+              <div class="bg-slate-900/80 border border-slate-800 rounded-2xl shadow-xl shadow-black/40 p-6">
+                <div class="flex items-center justify-between mb-3">
+                  <div>
+                    <h2 class="text-lg font-semibold">Candidate Workspace</h2>
+                    <p class="text-sm text-slate-400">Upload resumes and request AI matches.</p>
+                  </div>
+                  <span class="text-xs px-2 py-1 rounded-md border border-slate-700 text-slate-300">Role: USER</span>
+                </div>
+
+                <div class="space-y-6">
+                  <div class="border border-slate-800 rounded-xl p-4">
+                    <h3 class="text-sm font-semibold mb-2">1) Upload Resume</h3>
+                    <form id="resume-form" class="space-y-3">
+                      <p class="text-xs text-slate-400">Requires login token; user_id auto-applied from your account.</p>
+                      <input
+                        type="file"
+                        name="file"
+                        accept=".pdf"
+                        required
+                        class="block w-full text-sm text-slate-300 file:mr-4 file:rounded-md file:border-0 file:bg-indigo-500 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-white hover:file:bg-indigo-400"
+                      />
+                      <button
+                        type="submit"
+                        class="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 hover:bg-indigo-400"
+                      >
+                        <span id="resume-submit-label">Upload & Extract with AI</span>
+                        <span id="resume-spinner" class="hidden h-4 w-4 border-2 border-white/30 border-t-transparent rounded-full animate-spin"></span>
+                      </button>
+                    </form>
+                  </div>
+
+                  <div class="border border-slate-800 rounded-xl p-4">
+                    <h3 class="text-sm font-semibold mb-2">2) Match Against a Job/Application</h3>
+                    <form id="match-form" class="space-y-3">
+                      <div class="grid gap-3 sm:grid-cols-2">
+                        <input
+                          type="number"
+                          name="applicationId"
+                          class="w-full rounded-lg border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          placeholder="Application ID (optional)"
+                        />
+                        <input
+                          type="number"
+                          name="jobId"
+                          class="w-full rounded-lg border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          placeholder="Job ID (optional)"
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        class="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-emerald-950 shadow-lg shadow-emerald-500/30 hover:bg-emerald-400"
+                      >
+                        <span id="match-submit-label">Fetch AI Match Summary</span>
+                        <span id="match-spinner" class="hidden h-4 w-4 border-2 border-emerald-900/40 border-t-transparent rounded-full animate-spin"></span>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-900/80 border border-slate-800 rounded-2xl shadow-xl shadow-black/40 p-6">
+                <div class="flex items-center justify-between mb-3">
+                  <div>
+                    <h2 class="text-lg font-semibold">Admin Dashboard</h2>
+                    <p class="text-sm text-slate-400">Restricted to ADMIN role. Inspect resumes and matches.</p>
+                  </div>
+                  <span class="text-xs px-2 py-1 rounded-md border border-amber-500/40 text-amber-200 bg-amber-500/10">Role: ADMIN</span>
+                </div>
+                <div class="grid gap-4 md:grid-cols-2">
+                  <div class="border border-slate-800 rounded-xl p-4 space-y-3">
+                    <h3 class="text-sm font-semibold">Get Resume by ID</h3>
+                    <form id="admin-resume-form" class="space-y-2">
+                      <input
+                        type="number"
+                        name="resumeId"
+                        placeholder="Resume ID"
+                        required
+                        class="w-full rounded-lg border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                      <button
+                        type="submit"
+                        class="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-amber-500 px-3 py-2 text-sm font-semibold text-amber-950 shadow-lg shadow-amber-500/30 hover:bg-amber-400"
+                      >
+                        Fetch Resume Details
+                      </button>
+                    </form>
+                  </div>
+                  <div class="border border-slate-800 rounded-xl p-4 space-y-3">
+                    <h3 class="text-sm font-semibold">User Resumes</h3>
+                    <form id="admin-user-resumes-form" class="space-y-2">
+                      <input
+                        type="number"
+                        name="userId"
+                        placeholder="User ID"
+                        required
+                        class="w-full rounded-lg border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                      <button
+                        type="submit"
+                        class="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-amber-500 px-3 py-2 text-sm font-semibold text-amber-950 shadow-lg shadow-amber-500/30 hover:bg-amber-400"
+                      >
+                        Fetch User Resumes
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Right: Results -->
+            <section class="space-y-4">
+              <div class="bg-slate-900/80 border border-slate-800 rounded-2xl shadow-xl shadow-black/40 p-6 h-full flex flex-col">
+                <div class="flex items-center justify-between mb-2">
+                  <h2 class="text-lg font-semibold">AI Insights</h2>
+                  <div class="flex items-center gap-2">
+                    <button
+                      id="clear-output"
+                      class="text-xs px-2 py-1 rounded-md border border-slate-700 text-slate-300 hover:bg-slate-800"
+                      type="button"
+                    >
+                      Clear
+                    </button>
+                    <span class="text-xs text-slate-500">Showing latest response</span>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-400 mb-3">
+                  This panel shows AI extraction results, confidence scores, match stats, or admin data.
+                </p>
+                <pre
+                  id="output"
+                  class="flex-1 overflow-auto rounded-xl bg-slate-950/60 border border-slate-800 text-xs text-slate-100 p-4 font-mono whitespace-pre-wrap"
+                >Ready. Login first, then upload a resume.</pre>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+
+      <footer class="border-t border-slate-800 bg-slate-900/80">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+          <span>AI Resume Matcher • Backend on <code class="text-slate-300">/api/*</code></span>
+          <span>Gemini AI used when <code class="text-slate-300">GEMINI_API_KEY</code> is configured; otherwise uses regex fallback.</span>
+        </div>
+      </footer>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+  </html>
+
+

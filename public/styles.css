@@ -1,0 +1,26 @@
+/* Subtle gradient background + scrollbars */
+body {
+  background: radial-gradient(circle at top, rgba(56, 189, 248, 0.06), transparent 55%),
+    radial-gradient(circle at bottom, rgba(129, 140, 248, 0.08), transparent 60%),
+    #020617;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(30, 64, 175, 0.6);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(79, 70, 229, 0.9);
+}
+
+
