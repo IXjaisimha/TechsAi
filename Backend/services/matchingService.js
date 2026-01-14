@@ -43,28 +43,25 @@ function ruleMatch(resume, jobNormal, jobHidden, jobDetails = {}) {
     experience_score = 80; // Overqualified but not penalized much
   }
 
-  // Calculate Dual Scores
-  // Admin: Tech 40%, Exp 20%, Edu 10%, Hidden 30%
-  // Public: Tech 60%, Exp 30%, Edu 10%
+  // Calculate Standardized Score
+  // Standard: JD Match 70% (Tech 60% + Edu 10%), Hidden 20%, Experience 10%
 
-  // Baselines for fallback
-  const eduScore = 60; // Default if fallback
-
-  const admin_score = Math.round(
-    (technical_skills_score * 0.40) +
-    (experience_score * 0.20) +
+  const overall_score = Math.round(
+    (technical_skills_score * 0.60) +
     (eduScore * 0.10) +
-    (hidden_criteria_score * 0.30)
+    (hidden_criteria_score * 0.20) +
+    (experience_score * 0.10)
   );
 
+  // Public score can remain same or be alias of overall (minus hidden if needed, but for now kept simple)
   const public_score = Math.round(
-    (technical_skills_score * 0.60) +
-    (experience_score * 0.30) +
+    (technical_skills_score * 0.70) +
+    (experience_score * 0.20) +
     (eduScore * 0.10)
   );
 
   return {
-    overall_score: admin_score,
+    overall_score: overall_score,
     public_score: public_score,
     match_grade,
     scoring_breakdown: {
@@ -118,9 +115,9 @@ ${JSON.stringify(hiddenSkills, null, 2)}
 
 ### 1. OVERALL SCORE (0-100)
 Calculate a weighted overall match score based on:
-- **Technical Skills Match (50%)**: How well candidate's technical skills align with requirements
-- **Hidden Criteria Match (25%)**: Cultural fit, soft skills, work style alignment
-- **Experience Match (15%)**: Years of experience vs requirements
+- **Technical Skills Match (60%)**: How well candidate's technical skills align with requirements
+- **Hidden Criteria Match (20%)**: Cultural fit, soft skills, work style alignment
+- **Experience Match (10%)**: Years of experience vs requirements
 - **Education Match (10%)**: Relevant education and certifications
 
 ### 2. MATCH GRADE
@@ -270,25 +267,25 @@ async function matchResumeToJob(resumeData, jobSkills, hiddenSkills, jobDetails 
   const edu = Number(scores.education_score) || 0;
   const hidden = Number(scores.hidden_criteria_score) || 0;
 
-  // 1. Admin Score (Includes Hidden Criteria)
-  // Weights: Tech 40%, Exp 20%, Edu 10%, Hidden 30%
-  const admin_score = Math.round(
-    (tech * 0.40) +
-    (exp * 0.20) +
+  // 1. Standardized Overall Score
+  // Weights: JD Match 70% (Tech 60% + Edu 10%), Hidden 20%, Experience 10%
+  const overall_score = Math.round(
+    (tech * 0.60) +
     (edu * 0.10) +
-    (hidden * 0.30)
+    (hidden * 0.20) +
+    (exp * 0.10)
   );
 
-  // 2. Public Score (Excludes Hidden Criteria)
-  // Weights: Tech 60%, Exp 30%, Edu 10%
+  // 2. Public Score (Excludes Hidden Criteria, re-normalized if needed, but for simplicity we keep tech high)
+  // Weights for public view: Tech 70%, Exp 20%, Edu 10%
   const public_score = Math.round(
-    (tech * 0.60) +
-    (exp * 0.30) +
+    (tech * 0.70) +
+    (exp * 0.20) +
     (edu * 0.10)
   );
 
   return {
-    overall_score: admin_score, // Admin sees this by default as "Overall"
+    overall_score: overall_score, // Admin sees this by default as "Overall"
     public_score: public_score, // Users see this
     match_grade: aiJson.match_grade || 'Fair',
     scoring_breakdown: aiJson.scoring_breakdown || {},

@@ -1,4 +1,27 @@
+# Dependencies
 node_modules/
+.pnp
+.pnp.js
 
-.DS_Store
+# Environment variables
+.env
+.env.test
+.env.production
+config/options.env
+
+# Uploads
+uploads/
+!uploads/.gitkeep
+
+# Logs
+logs/
 *.log
+npm-debug.log*
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
