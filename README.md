@@ -62,8 +62,8 @@ NODE_ENV=development
 DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=your_mysql_password
-DB_NAME=TechsAI
-MONGODB_URI=mongodb://localhost:27017/techsai
+DB_NAME=your_db_name
+MONGODB_URI=mongodb://localhost:27017/db_name
 
 # JWT Secret
 JWT_SECRET=your_super_secret_key_change_this
@@ -71,7 +71,7 @@ JWT_SECRET=your_super_secret_key_change_this
 # AI API Keys
 OPENROUTER_API_KEY=sk-or-v1-your-key-here
 SITE_URL=http://localhost:5173
-SITE_NAME=TechsAI
+SITE_NAME=site_name
 
 # Email Service (Gmail App Password)
 EMAIL_SERVICE=gmail
