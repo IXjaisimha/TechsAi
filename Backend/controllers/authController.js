@@ -2,6 +2,10 @@ const { User, Job, Resume, Application, AIMatchResult } = require('../models');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 const config = require('../config/config');
+const { OAuth2Client } = require('google-auth-library');
+const crypto = require('crypto');
+
+const googleClient = new OAuth2Client(process.env.VITE_GOOGLE_CLIENT_ID || process.env.GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID');
 
 // Generate JWT Token
 const generateToken = (user) => {
@@ -129,6 +133,68 @@ exports.login = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Server error during login',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Google Login
+// @route   POST /api/auth/google
+// @access  Public
+exports.googleLogin = async (req, res) => {
+  try {
+    const { credential } = req.body;
+    
+    if (!credential) {
+      return res.status(400).json({ success: false, message: 'Google credential is required' });
+    }
+
+    // Verify the Google ID token
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.VITE_GOOGLE_CLIENT_ID || process.env.GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID'
+    });
+
+    const payload = ticket.getPayload();
+    const { email, name, sub: googleId } = payload;
+
+    // Check if user exists
+    let user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      // Create new user if they don't exist
+      const randomPassword = crypto.randomBytes(16).toString('hex'); // Generate random strong password
+      
+      user = await User.create({
+        full_name: name,
+        email,
+        password_hash: randomPassword, // Will be hashed by model hook
+        role: 'USER',
+        status: 'ACTIVE'
+      });
+    }
+
+    // Generate our JWT token
+    const token = generateToken(user);
+
+    res.status(200).json({
+      success: true,
+      message: 'Google Login successful',
+      token,
+      user: {
+        id: user.user_id,
+        name: user.full_name,
+        email: user.email,
+        role: user.role,
+        status: user.status
+      }
+    });
+
+  } catch (error) {
+    console.error('Google login error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error during Google login',
       error: error.message
     });
   }

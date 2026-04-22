@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 
 const Login = () => {
-    const { login } = useAuth();
+    const { login, googleLogin } = useAuth();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
@@ -22,6 +23,23 @@ const Login = () => {
         } else {
             setError(result.error);
         }
+    };
+
+    const handleGoogleSuccess = async (credentialResponse) => {
+        setError('');
+        setLoading(true);
+        const result = await googleLogin(credentialResponse.credential);
+        setLoading(false);
+        
+        if (result.success) {
+            navigate('/');
+        } else {
+            setError(result.error);
+        }
+    };
+
+    const handleGoogleError = () => {
+        setError('Google Login Failed');
     };
 
     return (
@@ -56,6 +74,18 @@ const Login = () => {
                         {loading ? 'Signing In...' : 'Sign In'}
                     </button>
                 </form>
+
+                <div className="my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300 text-sm text-center text-neutral-500">
+                    or
+                </div>
+
+                <div className="flex justify-center mb-4">
+                    <GoogleLogin
+                        onSuccess={handleGoogleSuccess}
+                        onError={handleGoogleError}
+                        useOneTap
+                    />
+                </div>
 
                 <p className="mt-4 text-center text-sm text-slate-600">
                     Don't have an account? <Link to="/signup" className="text-primary font-medium">Sign Up</Link>

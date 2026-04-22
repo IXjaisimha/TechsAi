@@ -43,6 +43,9 @@ function ruleMatch(resume, jobNormal, jobHidden, jobDetails = {}) {
     experience_score = 80; // Overqualified but not penalized much
   }
 
+  // Education score (Simple fallback)
+  const eduScore = 70;
+
   // Calculate Standardized Score
   // Standard: JD Match 70% (Tech 60% + Edu 10%), Hidden 20%, Experience 10%
 
@@ -53,12 +56,18 @@ function ruleMatch(resume, jobNormal, jobHidden, jobDetails = {}) {
     (experience_score * 0.10)
   );
 
-  // Public score can remain same or be alias of overall (minus hidden if needed, but for now kept simple)
+  // Public score
   const public_score = Math.round(
     (technical_skills_score * 0.70) +
     (experience_score * 0.20) +
     (eduScore * 0.10)
   );
+
+  let match_grade = 'Fair';
+  if (overall_score >= 80) match_grade = 'Excellent';
+  else if (overall_score >= 65) match_grade = 'Good';
+  else if (overall_score >= 50) match_grade = 'Fair';
+  else match_grade = 'Poor';
 
   return {
     overall_score: overall_score,

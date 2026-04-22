@@ -57,52 +57,63 @@ exports.uploadAndExtract = async (req, res) => {
     const resume_id = resume.resume_id;
     console.log(`✅ Resume saved to MySQL with ID: ${resume_id}`);
 
-    // Step 2: Extract skills using AI service (Gemini)
-    const extractedData = await extractFromResume(filePath);
-
-    // Step 3: Save extracted skills to MongoDB (AI-powered data)
-    const resumeSkill = await ResumeSkill.findOneAndUpdate(
-      { resume_id },
-      {
-        resume_id,
-        skills: extractedData.skills,
-        extraction_method: extractedData.extraction_method,
-        confidence_score: extractedData.confidence_score,
-        extracted_at: new Date(),
-        metadata: {
-          education: extractedData.education,
-          experience_years: extractedData.experience_years,
-          file_name: fileName,
-          file_size_kb: fileSize
-        }
-      },
-      {
-        upsert: true,
-        new: true,
-        runValidators: true
+    // Step 2: Create a pending record in MongoDB
+    const resumeSkill = await ResumeSkill.create({
+      resume_id,
+      skills: [],
+      extraction_method: 'Pending',
+      confidence_score: 0,
+      status: 'pending',
+      metadata: {
+        file_name: fileName,
+        file_size_kb: fileSize
       }
-    );
+    });
 
-    console.log(`✅ AI Extraction complete! Found ${extractedData.skills.length} skills`);
+    console.log(`✅ MongoDB record created with status 'pending'`);
 
+    // Step 3: Run AI extraction asynchronously in the background
+    extractFromResume(filePath)
+      .then(async (extractedData) => {
+        await ResumeSkill.findOneAndUpdate(
+          { resume_id },
+          {
+            skills: extractedData.skills,
+            extraction_method: extractedData.extraction_method,
+            confidence_score: extractedData.confidence_score,
+            status: 'completed',
+            extracted_at: new Date(),
+            metadata: {
+              education: extractedData.education,
+              experience_years: extractedData.experience_years,
+              file_name: fileName,
+              file_size_kb: fileSize
+            }
+          }
+        );
+        console.log(`✅ Background AI Extraction complete for resume ${resume_id}`);
+      })
+      .catch(async (error) => {
+        console.error(`❌ Background AI Extraction failed for resume ${resume_id}:`, error);
+        await ResumeSkill.findOneAndUpdate(
+          { resume_id },
+          { status: 'failed' }
+        );
+      });
+
+    // Return immediately to frontend
     res.status(201).json({
       success: true,
-      message: 'Resume uploaded successfully (MySQL) and AI-extracted skills saved (MongoDB)',
+      message: 'Resume uploaded successfully. AI extraction is running in the background.',
       data: {
         resume_id,
         mysql_resume: {
           id: resume.resume_id,
           file_name: resume.file_name,
-          file_path: resume.file_path, // Admin can access via this path
+          file_path: resume.file_path,
           uploaded_at: resume.uploaded_at
         },
-        ai_extracted_data: {
-          skills_count: extractedData.skills.length,
-          education: extractedData.education,
-          experience_years: extractedData.experience_years,
-          confidence_score: extractedData.confidence_score,
-          extraction_method: extractedData.extraction_method
-        },
+        status: 'processing',
         mongodb_skills_id: resumeSkill._id
       }
     });

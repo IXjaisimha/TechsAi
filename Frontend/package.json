@@ -10,9 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-oauth/google": "^0.13.5",
     "axios": "^1.13.2",
     "bootstrap": "^5.3.8",
     "css": "^3.0.0",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.562.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

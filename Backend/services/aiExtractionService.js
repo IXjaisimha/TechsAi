@@ -4,7 +4,10 @@
  */
 
 const fs = require("fs");
+const path = require("path");
 const pdfParse = require("pdf-parse");
+const mammoth = require("mammoth");
+const WordExtractor = require("word-extractor");
 const { runGemini } = require("./geminiService");
 
 /* ==============================
@@ -20,6 +23,26 @@ const extractTextFromPDF = async (filePath) => {
 
   console.log(`✅ PDF parsed: ${data.numpages} pages`);
   return data.text;
+};
+
+const extractTextFromDOCX = async (filePath) => {
+  const result = await mammoth.extractRawText({ path: filePath });
+  if (!result.value || !result.value.trim()) {
+    throw new Error("DOCX contains no readable text");
+  }
+  console.log(`✅ DOCX parsed`);
+  return result.value;
+};
+
+const extractTextFromDOC = async (filePath) => {
+  const extractor = new WordExtractor();
+  const extracted = await extractor.extract(filePath);
+  const text = extracted.getBody();
+  if (!text || !text.trim()) {
+    throw new Error("DOC contains no readable text");
+  }
+  console.log(`✅ DOC parsed`);
+  return text;
 };
 
 /* ==============================
@@ -113,7 +136,23 @@ Rules:
 const extractFromResume = async (filePath) => {
   console.log("🔍 Starting resume extraction...");
 
-  const text = await extractTextFromPDF(filePath);
+  let text = "";
+  const ext = path.extname(filePath).toLowerCase();
+
+  try {
+    if (ext === ".pdf") {
+      text = await extractTextFromPDF(filePath);
+    } else if (ext === ".docx") {
+      text = await extractTextFromDOCX(filePath);
+    } else if (ext === ".doc") {
+      text = await extractTextFromDOC(filePath);
+    } else {
+      throw new Error(`Unsupported file type: ${ext}`);
+    }
+  } catch (error) {
+    console.error(`❌ Failed to extract text from ${ext} file:`, error.message);
+    throw error;
+  }
 
   // Try AI Extraction first (OpenRouter)
   const apiKey = process.env.OPENROUTER_API_KEY || process.env.GEMINI_API_KEY;

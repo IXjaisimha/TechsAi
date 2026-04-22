@@ -1,42 +1,32 @@
 const axios = require('axios');
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 // Using OpenRouter for AI models
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const SITE_URL = process.env.SITE_URL || 'http://localhost:3000';
 const SITE_NAME = process.env.SITE_NAME || 'TechsAI';
 
-// Default candidate models to try in order
-// Default candidate models to try in order
-// Default candidate models to try in order (User Specified Free Stack)
+// Default candidate models for OpenRouter fallback
 const DEFAULT_MODELS = [
-  // 🥇 Primary Stack (Reasoning + Stability)
-  'tngtech/deepseek-r1t2-chimera:free', // Good reasoning
+  'openrouter/auto', // Smart router
+  'google/gemini-2.0-flash-001', // Standard non-free but high priority if they have balance
   'meta-llama/llama-3.3-70b-instruct:free',
-  'nousresearch/hermes-3-llama-3.1-405b:free',
-
-  // 🟡 Secondary / Lightweight Stack (Valid Free Models)
-  'google/gemini-2.0-flash-exp:free', // Fast & Capable
-  'meta-llama/llama-3.2-11b-vision-instruct:free',
-  'microsoft/phi-3-mini-128k-instruct:free',
-
-  // 🛡️ Safety Fallback 
-  'google/gemini-exp-1206:free'
+  'google/gemma-2-9b-it:free',
+  'meta-llama/llama-3.1-8b-instruct:free',
+  'mistralai/mistral-7b-instruct:free'
 ];
 
 function parseStrictJson(text) {
   if (!text || typeof text !== 'string') return null;
 
-  // 1. Try generic JSON regex extraction (finds the largest {} block)
   const jsonMatch = text.match(/\{[\s\S]*\}/);
   if (jsonMatch) {
     try {
       return JSON.parse(jsonMatch[0]);
-    } catch (e) {
-      // Continue to try other cleanup methods if this fails
-    }
+    } catch (e) {}
   }
 
-  // 2. Try removing markdown code blocks explicitly (if regex missed or was too greedy/wrong)
   const cleaned = text
     .replace(/```json/g, '')
     .replace(/```/g, '')
@@ -45,38 +35,65 @@ function parseStrictJson(text) {
   try {
     return JSON.parse(cleaned);
   } catch (e) {
-    console.error("JSON Parse failed. Original:", text.substring(0, 50) + "...");
-    console.error("Cleaned attempt:", cleaned.substring(0, 50) + "...");
     return null;
   }
 }
 
+/**
+ * Run AI extraction using native Google Gemini SDK (Fastest & most reliable)
+ */
+async function runNativeGemini(prompt) {
+  if (!GEMINI_API_KEY) return null;
+
+  try {
+    console.log(`🔄 Attempting AI model (Native Gemini SDK): gemini-2.0-flash`);
+    const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+
+    if (!text) return null;
+
+    const json = parseStrictJson(text);
+    if (json) {
+      console.log(`✅ Successfully parsed JSON from Native Gemini`);
+      return { data: json, model: 'gemini-2.0-flash (Native)' };
+    }
+  } catch (err) {
+    console.error(`❌ Native Gemini SDK failed:`, err.message);
+  }
+  return null;
+}
+
+/**
+ * Run AI extraction with OpenRouter fallback
+ */
 async function runGemini(prompt, models = DEFAULT_MODELS) {
-  // Ensure we have a key
-  if (!process.env.OPENROUTER_API_KEY) {
-    console.error('❌ Missing OPENROUTER_API_KEY in environment variables');
+  // 1. Try Native Gemini first if key is available
+  const nativeResult = await runNativeGemini(prompt);
+  if (nativeResult) return nativeResult;
+
+  // 2. Fallback to OpenRouter
+  if (!OPENROUTER_API_KEY) {
+    console.error('❌ Missing both GEMINI_API_KEY and OPENROUTER_API_KEY');
     return null;
   }
 
   for (const modelName of models) {
     try {
-      console.log(`🔄 Attempting AI model (OpenRouter): ${modelName}`);
+      console.log(`🔄 Attempting AI model (OpenRouter Fallback): ${modelName}`);
 
       const response = await axios.post(
         "https://openrouter.ai/api/v1/chat/completions",
         {
           model: modelName,
-          messages: [
-            {
-              role: "user",
-              content: prompt
-            }
-          ]
+          messages: [{ role: "user", content: prompt }]
         },
         {
-          timeout: 300000, // 300 seconds (5 minutes) timeout to allow for reasoning models
+          timeout: 60000,
           headers: {
-            "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+            "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
             "HTTP-Referer": SITE_URL,
             "X-Title": SITE_NAME,
             "Content-Type": "application/json"
@@ -84,39 +101,21 @@ async function runGemini(prompt, models = DEFAULT_MODELS) {
         }
       );
 
-      // Extract text from OpenRouter/OpenAI format
       const text = response.data.choices?.[0]?.message?.content;
-
-      if (!text) {
-        console.warn(`⚠️  ${modelName} returned empty response, trying next model...`);
-        continue;
-      }
-
-      console.log(`📥 Raw AI response (${modelName}):`, text.substring(0, 200) + '...');
+      if (!text) continue;
 
       const json = parseStrictJson(text);
-
       if (json) {
-        console.log(`✅ Successfully parsed JSON from ${modelName}`);
-        // Log lengths if available to confirm data structure
-        if (json.normal_skills || json.hidden_skills) {
-          console.log(`📊 Extracted ${json.normal_skills?.length || 0} normal skills, ${json.hidden_skills?.length || 0} hidden skills`);
-        } else if (json.skills) {
-          console.log(`📊 Extracted ${json.skills?.length || 0} resume skills`);
-        }
-
+        console.log(`✅ Successfully parsed JSON from ${modelName} (OpenRouter)`);
         return { data: json, model: modelName };
-      } else {
-        console.warn(`⚠️  ${modelName} returned invalid JSON, trying next model...`);
       }
     } catch (err) {
-      console.error(`❌ ${modelName} failed:`, err.response?.data || err.message);
-      // continue to next model
+      console.error(`❌ ${modelName} (OpenRouter) failed:`, err.message);
     }
   }
 
-  console.error('❌ All AI models failed to return valid JSON');
-  return null; // indicate failure for caller to use fallback
+  console.error('❌ All AI models failed');
+  return null;
 }
 
 module.exports = { runGemini, parseStrictJson, DEFAULT_MODELS };

@@ -1,6 +1,6 @@
 const express = require('express');
 const { body } = require('express-validator');
-const { register, login, adminLogin, getMe, registerAdmin, bootstrapAdmin, registerAdminWithSecret, getDashboardStats } = require('../controllers/authController');
+const { register, login, adminLogin, getMe, registerAdmin, bootstrapAdmin, registerAdminWithSecret, getDashboardStats, googleLogin } = require('../controllers/authController');
 const { protect, authorize } = require('../middleware/auth');
 
 const router = express.Router();
@@ -43,6 +43,7 @@ const loginValidation = [
 // Routes
 router.post('/register', registerValidation, register);
 router.post('/login', loginValidation, login);
+router.post('/google', googleLogin);
 router.post('/admin/login', loginValidation, adminLogin);
 router.get('/me', protect, getMe);
 router.get('/dashboard-stats', protect, getDashboardStats);

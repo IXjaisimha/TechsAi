@@ -107,19 +107,19 @@ const ApplyJob = () => {
                                 <Upload className="text-primary" size={40} />
                             </div>
                             <h2 className="text-xl font-bold mb-2">Upload your Resume</h2>
-                            <p className="text-slate-500 mb-8 max-w-md mx-auto">
-                                We accept PDF files. Our AI will analyze your resume to find the best match with the job description.
+                             <p className="text-slate-500 mb-8 max-w-md mx-auto">
+                                We accept PDF, DOC, and DOCX files. Our AI will analyze your resume to find the best match with the job description.
                             </p>
 
                             <input
                                 type="file"
-                                accept=".pdf"
+                                accept=".pdf,.doc,.docx"
                                 onChange={handleFileChange}
                                 className="hidden"
                                 id="resume-upload"
                             />
                             <label htmlFor="resume-upload" className="btn btn-outline border-dashed border-2 px-8 py-4 w-full max-w-sm mx-auto mb-4 cursor-pointer text-slate-600 hover:text-primary hover:border-primary">
-                                {file ? file.name : 'Click to Upload PDF'}
+                                {file ? file.name : 'Click to Upload Resume'}
                             </label>
 
                             {file && (
