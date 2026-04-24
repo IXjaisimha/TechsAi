@@ -331,10 +331,18 @@ exports.createJob = async (req, res) => {
       next_step: 'Job and skills saved.'
     });
   } catch (error) {
-    console.error('Admin - Create job error:', error);
+    console.error('❌ Admin - Create job error:', error);
+    
+    let errorMessage = 'Failed to create job';
+    if (error.name === 'MongooseError' && error.message.includes('buffering timed out')) {
+      errorMessage = 'MongoDB connection timeout. Please ensure MongoDB service is running.';
+    } else if (error.message.includes('ECONNREFUSED')) {
+      errorMessage = 'Could not connect to MongoDB. Please check if the database service is started.';
+    }
+
     res.status(500).json({
       success: false,
-      message: 'Failed to create job',
+      message: errorMessage,
       error: error.message
     });
   }

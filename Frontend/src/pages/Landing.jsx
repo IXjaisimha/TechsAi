@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Navigate, Link } from 'react-router-dom';
-import { Sparkles, TrendingUp, Shield, Star, Mail, Phone, ArrowRight, CheckCircle, Zap, Users, Target } from 'lucide-react';
+import { Sparkles, Briefcase, ShieldCheck, HeartHandshake, Mail, Phone, ArrowRight, Zap, Users, Target } from 'lucide-react';
 
 const Landing = () => {
     const { user, loading } = useAuth();
@@ -17,32 +17,39 @@ const Landing = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+        <div className="min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-indigo-100 selection:text-indigo-900">
+            {/* Ambient Background Glows */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+                <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-indigo-200/50 blur-[120px]" />
+                <div className="absolute top-[20%] -right-[10%] w-[30%] h-[50%] rounded-full bg-blue-200/40 blur-[100px]" />
+                <div className="absolute -bottom-[10%] left-[20%] w-[50%] h-[40%] rounded-full bg-purple-200/40 blur-[120px]" />
+            </div>
+
             {/* Header */}
-            <header className="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+            <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-sm transition-all duration-300">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                    {/* Top Bar */}
-                    <div className="flex items-center justify-between py-3 border-b border-slate-100">
-                        <div className="flex items-center gap-6 text-sm text-slate-600">
-                            <a href="mailto:hello@airecruitment.com" className="flex items-center gap-2 hover:text-indigo-600 transition-colors">
-                                <Mail size={16} />
-                                <span className="hidden sm:inline">hello@airecruitment.com</span>
+                    {/* Top Contact Bar */}
+                    <div className="flex items-center justify-between py-2.5 border-b border-slate-200/50">
+                        <div className="flex items-center gap-6 text-xs sm:text-sm text-slate-600 font-medium">
+                            <a href="mailto:hr.ixtechsai@gmail.com" className="flex items-center gap-2 hover:text-indigo-600 transition-colors group">
+                                <Mail size={14} className="text-slate-400 group-hover:text-indigo-500 transition-colors" />
+                                <span className="hidden sm:inline tracking-wide">hr.ixtechsai@gmail.com</span>
                             </a>
-                            <a href="tel:+11234567890" className="flex items-center gap-2 hover:text-indigo-600 transition-colors">
-                                <Phone size={16} />
-                                <span className="hidden sm:inline">+1 (123) 456-7890</span>
+                            <a href="tel:9618690117" className="flex items-center gap-2 hover:text-indigo-600 transition-colors group">
+                                <Phone size={14} className="text-slate-400 group-hover:text-indigo-500 transition-colors" />
+                                <span className="hidden sm:inline tracking-wide">+91 9618690117</span>
                             </a>
                         </div>
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-5">
                             <Link 
                                 to="/login" 
-                                className="text-sm font-medium text-slate-700 hover:text-indigo-600 transition-colors"
+                                className="text-sm font-semibold text-slate-600 hover:text-indigo-600 transition-colors"
                             >
                                 Sign In
                             </Link>
                             <Link 
                                 to="/signup" 
-                                className="text-sm font-medium px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-all hover:shadow-lg"
+                                className="text-sm font-semibold px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-md hover:shadow-indigo-500/20 transition-all duration-200"
                             >
                                 Get Started
                             </Link>
@@ -51,183 +58,167 @@ const Landing = () => {
 
                     {/* Main Navigation */}
                     <nav className="flex items-center justify-between py-4">
-                        <div className="flex items-center gap-2">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg">
-                                <Sparkles className="text-white" size={24} />
+                        <div className="flex items-center gap-3 cursor-pointer">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-md shadow-indigo-500/20">
+                                <Sparkles className="text-white" size={20} strokeWidth={2.5} />
                             </div>
-                            <span className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                                AI Recruit
+                            <span className="text-2xl font-extrabold tracking-tight text-slate-800">
+                                Resume<span className="text-indigo-600">AI</span>
                             </span>
                         </div>
                         
                         <div className="hidden md:flex items-center gap-8">
-                            <a href="#features" className="text-slate-700 hover:text-indigo-600 font-medium transition-colors">Features</a>
-                            <a href="#how-it-works" className="text-slate-700 hover:text-indigo-600 font-medium transition-colors">How It Works</a>
-                            <a href="#benefits" className="text-slate-700 hover:text-indigo-600 font-medium transition-colors">Benefits</a>
+                            <a href="#features" className="text-sm font-semibold text-slate-600 hover:text-indigo-600 transition-colors">Features</a>
+                            <a href="#about" className="text-sm font-semibold text-slate-600 hover:text-indigo-600 transition-colors">About Us</a>
                         </div>
                     </nav>
                 </div>
             </header>
 
             {/* Hero Section */}
-            <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-                <div className="max-w-5xl mx-auto text-center">
-                    {/* Animated Badge */}
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-100 border border-indigo-200 text-indigo-700 text-sm font-medium mb-8 animate-pulse">
-                        <Zap size={16} className="text-indigo-600" />
-                        AI-Powered Recruitment Platform
-                    </div>
+            <main className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 lg:pt-28 lg:pb-32">
+                <div className="max-w-4xl mx-auto text-center">
+                    
 
                     {/* Main Headline */}
-                    <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-slate-900 mb-8 leading-tight">
-                        Your Trusted Partner in
-                        <br />
-                        <span className="relative inline-block mt-2">
-                            <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                                AI-Powered Product Innovation
-                            </span>
-                            <svg className="absolute -bottom-2 left-0 w-full" height="12" viewBox="0 0 400 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M2 10C80 3 160 1 240 4C320 7 360 9 398 10" stroke="url(#gradient)" strokeWidth="3" strokeLinecap="round"/>
-                                <defs>
-                                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                        <stop offset="0%" stopColor="#4F46E5"/>
-                                        <stop offset="50%" stopColor="#9333EA"/>
-                                        <stop offset="100%" stopColor="#EC4899"/>
-                                    </linearGradient>
-                                </defs>
-                            </svg>
+                    <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-slate-900 mb-8 leading-[1.1] tracking-tight">
+                        Connecting Talent with <br className="hidden sm:block" />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">
+                            Opportunity through AI
                         </span>
-                        <span className="inline-block ml-3 animate-bounce">✨</span>
                     </h1>
 
                     {/* Subheadline */}
-                    <p className="text-xl lg:text-2xl text-slate-600 mb-12 max-w-3xl mx-auto leading-relaxed">
-                        As a trusted partner in AI development services, we combine technological expertise with a passion for 
-                        innovation to deliver scalable, secure, and bespoke software solutions tailored to your business needs.
+                    <p className="text-lg sm:text-xl text-slate-600 mb-12 max-w-2xl mx-auto leading-relaxed font-medium">
+                        Whether you're looking for your dream job or searching for the perfect candidate, 
+                        ResumeAI makes the process seamless, intelligent, and highly personalized.
                     </p>
 
                     {/* CTA Buttons */}
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+                    <div className="flex flex-col sm:flex-row gap-5 justify-center mb-20">
                         <Link 
                             to="/signup" 
-                            className="group px-8 py-4 bg-indigo-600 text-white rounded-xl font-semibold text-lg hover:bg-indigo-700 transition-all hover:shadow-2xl hover:shadow-indigo-500/50 transform hover:-translate-y-1 flex items-center justify-center gap-2"
+                            className="group px-8 py-4 bg-indigo-600 text-white rounded-2xl font-semibold text-lg hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-500/30 transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-3"
                         >
-                            Schedule A Discovery Meeting
-                            <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
+                            Find Your Match
+                            <ArrowRight className="group-hover:translate-x-1.5 transition-transform duration-300" size={20} />
                         </Link>
                         <Link 
                             to="/login" 
-                            className="px-8 py-4 bg-white text-slate-900 rounded-xl font-semibold text-lg border-2 border-slate-300 hover:border-indigo-600 hover:text-indigo-600 transition-all hover:shadow-xl transform hover:-translate-y-1"
+                            className="px-8 py-4 bg-white/80 backdrop-blur-sm text-slate-800 rounded-2xl font-semibold text-lg border border-slate-200 hover:border-indigo-300 hover:bg-white hover:text-indigo-700 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1"
                         >
-                            Discover How We Work
+                            Log In
                         </Link>
                     </div>
 
-                    {/* Feature Pills */}
-                    <div className="flex flex-wrap items-center justify-center gap-4">
-                        <div className="group px-6 py-3 rounded-full bg-gradient-to-r from-yellow-50 to-yellow-100 border border-yellow-200 flex items-center gap-2 hover:shadow-lg transition-all cursor-pointer">
-                            <TrendingUp className="text-yellow-600" size={20} />
-                            <span className="font-medium text-slate-700">Your Vision, Our Expertise</span>
+                    {/* Trust Indicators */}
+                    <div className="flex flex-wrap items-center justify-center gap-6">
+                        <div className="px-6 py-3 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/50 flex items-center gap-3 shadow-sm">
+                            <Briefcase className="text-indigo-500" size={22} />
+                            <span className="font-semibold text-slate-700 text-sm">Smart Role Matching</span>
                         </div>
-                        <div className="group px-6 py-3 rounded-full bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 flex items-center gap-2 hover:shadow-lg transition-all cursor-pointer">
-                            <Shield className="text-blue-600" size={20} />
-                            <span className="font-medium text-slate-700">Confidential & Secure - NDA Protected</span>
+                        <div className="px-6 py-3 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/50 flex items-center gap-3 shadow-sm">
+                            <ShieldCheck className="text-blue-500" size={22} />
+                            <span className="font-semibold text-slate-700 text-sm">Secure & Private</span>
                         </div>
-                        <div className="group px-6 py-3 rounded-full bg-gradient-to-r from-green-50 to-green-100 border border-green-200 flex items-center gap-2 hover:shadow-lg transition-all cursor-pointer">
-                            <Star className="text-green-600" size={20} />
-                            <span className="font-medium text-slate-700">Top Developers at Work</span>
+                        <div className="px-6 py-3 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/50 flex items-center gap-3 shadow-sm">
+                            <Users className="text-emerald-500" size={22} />
+                            <span className="font-semibold text-slate-700 text-sm">Community Trusted</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Features Section */}
-                <div id="features" className="mt-32">
-                    <div className="text-center mb-16">
-                        <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
-                            Why Choose Our Platform?
+                <div id="features" className="mt-40">
+                    <div className="text-center mb-20">
+                        <h2 className="text-3xl lg:text-4xl font-extrabold text-slate-900 mb-5">
+                            Why Choose ResumeAI?
                         </h2>
-                        <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-                            Experience the future of recruitment with cutting-edge AI technology
+                        <p className="text-lg text-slate-600 max-w-2xl mx-auto font-medium">
+                            We've designed our platform to be as helpful and intuitive as possible, putting the focus back on people.
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-3 gap-8">
+                    <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                         {/* Feature Card 1 */}
-                        <div className="group relative bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2 border border-slate-100">
-                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                                <Target className="text-white" size={28} />
+                        <div className="group bg-white/80 backdrop-blur-sm rounded-3xl p-10 shadow-sm border border-white/60 hover:shadow-xl hover:bg-white transition-all duration-300 hover:-translate-y-2">
+                            <div className="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300 group-hover:bg-indigo-100">
+                                <Target className="text-indigo-600" size={32} />
                             </div>
-                            <h3 className="text-2xl font-bold text-slate-900 mb-3">95% Match Accuracy</h3>
-                            <p className="text-slate-600 leading-relaxed">
-                                Our advanced AI algorithms analyze skills, experience, and cultural fit to ensure perfect matches between candidates and positions.
+                            <h3 className="text-2xl font-bold text-slate-800 mb-4">Precision Matching</h3>
+                            <p className="text-slate-600 leading-relaxed font-medium">
+                                Our AI looks beyond keywords. It understands context, cultural fit, and potential, ensuring matches that truly make sense for both parties.
                             </p>
-                            <div className="mt-4 flex items-center text-indigo-600 font-semibold group-hover:gap-2 transition-all">
-                                Learn more <ArrowRight size={16} className="ml-1 group-hover:translate-x-1 transition-transform" />
-                            </div>
                         </div>
 
                         {/* Feature Card 2 */}
-                        <div className="group relative bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2 border border-slate-100">
-                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                                <Zap className="text-white" size={28} />
+                        <div className="group bg-white/80 backdrop-blur-sm rounded-3xl p-10 shadow-sm border border-white/60 hover:shadow-xl hover:bg-white transition-all duration-300 hover:-translate-y-2">
+                            <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300 group-hover:bg-blue-100">
+                                <Zap className="text-blue-600" size={32} />
                             </div>
-                            <h3 className="text-2xl font-bold text-slate-900 mb-3">Lightning Fast</h3>
-                            <p className="text-slate-600 leading-relaxed">
-                                Screen hundreds of resumes in seconds. What used to take days now happens instantly with AI-powered automation.
+                            <h3 className="text-2xl font-bold text-slate-800 mb-4">Effortless Speed</h3>
+                            <p className="text-slate-600 leading-relaxed font-medium">
+                                Save hours of manual screening. ResumeAI processes resumes and job descriptions instantly, giving you back your most valuable resource: time.
                             </p>
-                            <div className="mt-4 flex items-center text-blue-600 font-semibold group-hover:gap-2 transition-all">
-                                Learn more <ArrowRight size={16} className="ml-1 group-hover:translate-x-1 transition-transform" />
-                            </div>
                         </div>
 
                         {/* Feature Card 3 */}
-                        <div className="group relative bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2 border border-slate-100">
-                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                                <Users className="text-white" size={28} />
+                        <div className="group bg-white/80 backdrop-blur-sm rounded-3xl p-10 shadow-sm border border-white/60 hover:shadow-xl hover:bg-white transition-all duration-300 hover:-translate-y-2">
+                            <div className="w-16 h-16 rounded-2xl bg-purple-50 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300 group-hover:bg-purple-100">
+                                <Sparkles className="text-purple-600" size={32} />
                             </div>
-                            <h3 className="text-2xl font-bold text-slate-900 mb-3">Trusted by Thousands</h3>
-                            <p className="text-slate-600 leading-relaxed">
-                                Join leading companies worldwide who trust our platform to find and hire the best talent for their teams.
+                            <h3 className="text-2xl font-bold text-slate-800 mb-4">Actionable Insights</h3>
+                            <p className="text-slate-600 leading-relaxed font-medium">
+                                Get clear, friendly feedback on why a match works. We provide transparent scoring so you always know where you stand.
                             </p>
-                            <div className="mt-4 flex items-center text-green-600 font-semibold group-hover:gap-2 transition-all">
-                                Learn more <ArrowRight size={16} className="ml-1 group-hover:translate-x-1 transition-transform" />
-                            </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Stats Section */}
-                <div className="mt-32 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl p-12 shadow-2xl">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white">
-                        <div>
-                            <div className="text-5xl font-bold mb-2">10K+</div>
-                            <div className="text-indigo-100">Active Users</div>
-                        </div>
-                        <div>
-                            <div className="text-5xl font-bold mb-2">95%</div>
-                            <div className="text-indigo-100">Match Accuracy</div>
-                        </div>
-                        <div>
-                            <div className="text-5xl font-bold mb-2">50K+</div>
-                            <div className="text-indigo-100">Jobs Filled</div>
-                        </div>
-                        <div>
-                            <div className="text-5xl font-bold mb-2">24/7</div>
-                            <div className="text-indigo-100">AI Support</div>
-                        </div>
+                {/* Friendly Call to Action Area */}
+                <div id="how-it-works" className="mt-40 bg-white rounded-[3rem] p-12 lg:p-20 shadow-2xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden max-w-5xl mx-auto text-center">
+                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 via-white to-blue-50/50 pointer-events-none" />
+                    <div className="relative z-10">
+                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-6">Ready to get started?</h2>
+                        <p className="text-lg text-slate-600 mb-10 max-w-xl mx-auto font-medium">
+                            Join ResumeAI today and experience a recruitment process that actually feels human.
+                        </p>
+                        <Link 
+                            to="/signup" 
+                            className="inline-flex items-center justify-center px-10 py-4 bg-slate-900 text-white rounded-2xl font-semibold text-lg hover:bg-indigo-600 transition-colors duration-300 shadow-lg"
+                        >
+                            Create Your Free Account
+                        </Link>
                     </div>
                 </div>
             </main>
 
             {/* Footer */}
-            <footer className="bg-slate-900 text-slate-300 mt-32 py-12">
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <p className="text-sm">
-                        TRUSTED BY STARTUPS AND ENTERPRISES WORLDWIDE
-                    </p>
-                    <p className="text-xs mt-4 text-slate-500">
-                        © 2026 AI Recruit. All rights reserved. | Powered by Advanced AI Technology
-                    </p>
+            <footer id="about" className="relative z-10 bg-slate-50 border-t border-slate-200/60 pt-16 pb-8 mt-20">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-8">
+                        <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
+                                <Sparkles className="text-white" size={16} strokeWidth={2.5} />
+                            </div>
+                            <span className="text-xl font-bold text-slate-800">
+                                Resume<span className="text-indigo-600">AI</span>
+                            </span>
+                        </div>
+                        <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-10 text-sm font-medium text-slate-500">
+                            <a href="mailto:hr.ixtechsai@gmail.com" className="hover:text-indigo-600 transition-colors flex items-center gap-2">
+                                <Mail size={16} /> hr.ixtechsai@gmail.com
+                            </a>
+                            <a href="tel:9618690117" className="hover:text-indigo-600 transition-colors flex items-center gap-2">
+                                <Phone size={16} /> 9618690117
+                            </a>
+                        </div>
+                    </div>
+                    <div className="text-center border-t border-slate-200/60 pt-8">
+                        <p className="text-sm font-medium text-slate-400">
+                            © {new Date().getFullYear()} ResumeAI. All rights reserved. Designed to help you succeed.
+                        </p>
+                    </div>
                 </div>
             </footer>
         </div>
@@ -235,3 +226,4 @@ const Landing = () => {
 };
 
 export default Landing;
+

@@ -51,11 +51,18 @@ Application.belongsTo(Resume, { foreignKey: 'resume_id' });
 // ============================================
 const connectMongoDB = async () => {
   try {
-    await mongoose.connect(config.mongodb.uri);
-    console.log('MongoDB connected successfully');
+    // Set a lower timeout for server selection so it fails faster if the service is down
+    // Also disable buffering if the connection is not established
+    await mongoose.connect(config.mongodb.uri, {
+      serverSelectionTimeoutMS: 5000, // 5 seconds instead of default 30s
+    });
+    console.log('✅ MongoDB connected successfully (AI & Skills Data)');
   } catch (error) {
-    console.error('MongoDB connection error:', error);
-    // Don't exit process, allow MySQL to continue working
+    console.error('❌ MongoDB connection error:', error.message);
+    console.warn('⚠️  MongoDB-dependent features (AI Analysis, Skill Matching) will be unavailable.');
+    // Disable buffering globally if connection fails so operations fail immediately
+    // rather than timing out after 10s
+    mongoose.set('bufferCommands', false);
   }
 };
 
